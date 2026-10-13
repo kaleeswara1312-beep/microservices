@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: ecom-order-service
+
+server:
+  port: 8000
+
+logging:
+  level:
+    org.example.ecomorderservice.config: DEBUG
+    org.example.ecomorderservice: DEBUG
