@@ -5,8 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "Inventory" ,
-        url = "http://localhost:8001",
+@FeignClient(name = "ecom-inventory-service",
+//        url = "http://localhost:8001",
         configuration = FeignAnotherCustomLog.class
 )
 public interface FeignClientConfig {

@@ -21,10 +21,10 @@ public class FeignAnotherCustomLog {
         return Logger.Level.FULL;
     }
 
-    @Bean
-    public Request.Options FeignOptions(){
-        return new Request.Options(2000, 5000);
-    }
+//    @Bean
+//    public Request.Options FeignOptions(){
+//        return new Request.Options(2000, 5000);
+//    }
 
     @Bean
     public Retryer retryer(){

@@ -18,7 +18,7 @@ public class InventoryController {
     }
 
     @GetMapping("{productId}")
-    public String placeOrder(@PathVariable String productId) throws InterruptedException {
+    public String placeOrder(@PathVariable String productId) throws Exception {
         return inventoryService.placeOrder(productId);
     }
 }
