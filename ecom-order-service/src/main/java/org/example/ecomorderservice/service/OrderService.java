@@ -20,7 +20,9 @@ public class OrderService {
 
     public String placeOrder(String productId){
 
-        return feignClientConfig.placeOrder(productId);
+        // Call the private method
+        String validatedProductId = validateProductId(productId);
+        return feignClientConfig.placeOrder(validatedProductId);
 
 //        return restTemplateConfig.restTemplate().
 //                getForObject("http://localhost:8001/inventory/" + productId, String.class);
@@ -29,5 +31,19 @@ public class OrderService {
 //                .uri("http://localhost:8001/inventory/{productId}" , productId)
 //                .retrieve()
 //                .body(String.class);
+    }
+
+    private String validateProductId(String productId) {
+
+        if (productId == null || productId.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Product ID cannot be null or blank");
+        }
+
+        return productId.trim();
+    }
+
+    public void cancelOrder(String productId){
+        System.out.println("Do nothing: " + productId);
     }
 }
