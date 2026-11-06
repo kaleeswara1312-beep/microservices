@@ -1,13 +1,16 @@
+
 spring:
   application:
     name: ecom-order-service
 
   cloud:
     openfeign:
+      micrometer:
+        enabled: true
       client:
         default-to-properties: true
         config:
-          inventory-service:
+          ecom-inventory-service:
             connectTimeout: 3000
             readTimeout: 20000
             loggerLevel: full
@@ -15,78 +18,26 @@ spring:
 server:
   port: 8003
 
-logging:
-  level:
-    org.example.ecomorderservice.config: DEBUG
-    org.example.ecomorderservice: DEBUG
+otel:
+  file_format: "1.0"
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+  resource:
+    attributes:
+      - name: service.name
+        value: ecom-order-service
 
-#resilience4j:
-#  ratelimiter:
-#    instances:
-#      orderService:
-#        limitForPeriod: 2
-#        limitRefreshPeriod: 10s
-#        timeoutDuration: 0
-#
-#  circuitbreaker:
-#    instances:
-#      circuitOrderService:
-#
-#        registerHealthIndicator: true
-#
-#        # Examines the last 5 calls to calculate the failure rate
-#        slidingWindowType: COUNT_BASED
-#        slidingWindowSize: 5
-#
-#        # Requires at least 5 calls before calculating the failure rate
-#        minimumNumberOfCalls: 5
-#
-#        # Opens the circuit when 50% or more of calls fail
-#        failureRateThreshold: 50
-#
-#        # OPEN state: rejects calls for 10 seconds
-#        waitDurationInOpenState: 10s
-#
-#        # HALF_OPEN state: allows 2 test calls to check service recovery
-#        permittedNumberOfCallsInHalfOpenState: 2
-#
-#        # Automatically transitions from OPEN to HALF_OPEN after 10 seconds
-#        automaticTransitionFromOpenToHalfOpenEnabled: true
-#
-#      recordExceptions:
-#        - feign.FeignException
-#        - java.io.IOException
-#        - java.lang.RuntimeException
-#
-#        # Ignore these exceptions
-#      ignoreExceptions:
-#          - java.lang.IllegalArgumentException
-#
-#  timelimiter:
-#    instances:
-#      timeLimitOrderService:
-#        timeoutDuration: 2s
-#        cancelRunningFuture: true
+  propagator:
+    composite:
+      - tracecontext:
+      - baggage:
 
-#resilience4j:
-#  bulkhead:
-#    instances:
-#      bulkHeadOrderService:
-#        maxConcurrentCalls: 1
-#        maxWaitDuration: 0s
+  instrumentation:
+    micrometer:
+      enabled: true
 
-resilience4j:
-  thread-pool-bulkhead:
-    instances:
-      bulkHeadOrderService:
-        maxThreadPoolSize: 1
-        coreThreadPoolSize: 1
-        queueCapacity: 0
-        keepAliveDuration: 20ms
+  tracer_provider:
+    processors:
+      - batch:
+          exporter:
+            otlp_http:
+              endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}

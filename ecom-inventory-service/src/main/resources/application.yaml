@@ -5,9 +5,22 @@ spring:
 server:
   port: 8001
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+otel:
+  file_format: "1.0"
+
+  resource:
+    attributes:
+      - name: service.name
+        value: ecom-inventory-service
+
+  propagator:
+    composite:
+      - tracecontext:
+      - baggage:
+
+  tracer_provider:
+    processors:
+      - batch:
+          exporter:
+            otlp_http:
+              endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}

@@ -39,17 +39,17 @@ public class OrderController {
 //    )
 
 //    @TimeLimiter(name = "timeLimitOrderService", fallbackMethod = "orderTimeLimiterFallback")
-    @Bulkhead(name = "bulkHeadOrderService",
-            type = Bulkhead.Type.THREADPOOL,
-            fallbackMethod = "orderBulkHeadFallback"
-    )
+//    @Bulkhead(name = "bulkHeadOrderService",
+//            type = Bulkhead.Type.THREADPOOL,
+//            fallbackMethod = "orderBulkHeadFallback"
+//    )
     @GetMapping("/{productId}")
-//    public String placeOrder(@PathVariable String productId) {
-//        return orderService.placeOrder(productId);
-//    }
-    public CompletableFuture<String> placeOrder(@PathVariable String productId) {
-        return CompletableFuture.supplyAsync(() -> orderService.placeOrder(productId));
+    public String placeOrder(@PathVariable String productId) {
+        return orderService.placeOrder(productId);
     }
+//    public CompletableFuture<String> placeOrder(@PathVariable String productId) {
+//        return CompletableFuture.supplyAsync(() -> orderService.placeOrder(productId));
+//    }
 
     // Rate Limiter fallback
     public String orderRateLimitFallback(
