@@ -5,6 +5,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
+import org.example.ecomorderservice.service.AsyncOrderService;
 import org.example.ecomorderservice.service.OrderService;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -21,9 +22,11 @@ public class OrderController {
 
     private final org.example.ecomorderservice.service.OrderService orderService;
 
+    private final AsyncOrderService asyncOrderService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, AsyncOrderService asyncOrderService) {
         this.orderService = orderService;
+        this.asyncOrderService = asyncOrderService;
     }
 
 //    @Retryable(
@@ -46,6 +49,11 @@ public class OrderController {
     @GetMapping("/{productId}")
     public String placeOrder(@PathVariable String productId) {
         return orderService.placeOrder(productId);
+    }
+
+    @GetMapping("/async/{productId}")
+    public String asyncPlaceOrder(@PathVariable String productId) {
+        return asyncOrderService.placeOrder(productId);
     }
 //    public CompletableFuture<String> placeOrder(@PathVariable String productId) {
 //        return CompletableFuture.supplyAsync(() -> orderService.placeOrder(productId));

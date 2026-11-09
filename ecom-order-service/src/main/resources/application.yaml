@@ -15,6 +15,13 @@ spring:
             readTimeout: 20000
             loggerLevel: full
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
+    virtual-host: /
+
 server:
   port: 8003
 
@@ -41,3 +48,8 @@ otel:
           exporter:
             otlp_http:
               endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
+
+logging:
+  level:
+    org.springframework.amqp: DEBUG
+    org.springframework.amqp.rabbit: DEBUG

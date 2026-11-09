@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public class InventoryService {
 
     public String placeOrder(String productId) throws Exception {
-        Thread.sleep(15000);
+//        Thread.sleep(15000);
          if(productId.equals("1")){
              return "Order placed Successfully";
          }
