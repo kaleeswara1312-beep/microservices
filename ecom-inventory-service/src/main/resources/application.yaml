@@ -9,8 +9,22 @@ spring:
     password: admin123
     virtual-host: /
 
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: inventory-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.value.default.type: org.example.ecominventoryservice.service.OrderEvent
+        spring.json.trusted.packages: org.example.ecominventoryservice.service
+        spring.json.use.type.headers: false
+
+
 server:
-  port: 8001
+  port: ${SERVER_PORT:8001}
 
 otel:
   file_format: "1.0"

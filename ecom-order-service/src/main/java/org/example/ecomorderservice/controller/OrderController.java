@@ -5,14 +5,13 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
+import org.example.ecomorderservice.kafka.OrderEvent;
+import org.example.ecomorderservice.kafka.OrderProducer;
 import org.example.ecomorderservice.service.AsyncOrderService;
 import org.example.ecomorderservice.service.OrderService;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -24,9 +23,12 @@ public class OrderController {
 
     private final AsyncOrderService asyncOrderService;
 
-    public OrderController(OrderService orderService, AsyncOrderService asyncOrderService) {
+    private final OrderProducer orderProducer;
+
+    public OrderController(OrderService orderService, AsyncOrderService asyncOrderService, OrderProducer orderProducer) {
         this.orderService = orderService;
         this.asyncOrderService = asyncOrderService;
+        this.orderProducer = orderProducer;
     }
 
 //    @Retryable(
@@ -58,6 +60,22 @@ public class OrderController {
 //    public CompletableFuture<String> placeOrder(@PathVariable String productId) {
 //        return CompletableFuture.supplyAsync(() -> orderService.placeOrder(productId));
 //    }
+
+    @PostMapping("/publish")
+    public String publishOrder() {
+
+        OrderEvent event = new OrderEvent(
+                "ORD101",
+                "CUS101",
+                "PROD101",
+                2,
+                "CREATED"
+        );
+
+        orderProducer.publishOrderEvent(event);
+
+        return "Order event published successfully!";
+    }
 
     // Rate Limiter fallback
     public String orderRateLimitFallback(
